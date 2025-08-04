@@ -56,3 +56,48 @@ build-image-tdv78   1/1     Running   0          97s
 kubectl logs -f -n proxmox-build-infrastructure-system build-image-tdv78
 ```
 Wait until the job is done and a VM template will show up on the Proxmox UI. Kubernetes will automatically restart the job if the build fails.
+
+### Initialize Cluster-API
+- Install ArgoCD
+```shell
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+- Install Cluster-API components as ArgoCD applications.
+We are going to apply them one by one in order and checked for each one it's Healthy and Synced as they are dependible.
+```shell
+kubectl apply -f apps/app-cert-manager.yaml
+```
+```shell
+kubectl get apps -A
+```
+```shell
+kubectl apply -f apps/app-cluster-api.yaml
+```
+```shell
+kubectl get apps -A
+```
+```shell
+kubectl apply -f apps/app-caprox-engine.yaml
+```
+```shell
+kubectl get apps -A
+```
+```shell
+NAME                                 SYNC STATUS   HEALTH STATUS
+cluster-api-operator-caprox-engine   Synced        Healthy
+cluster-api-operator-cert-manager    Synced        Healthy
+cluster-api-operator-main            Synced        Healthy
+```
+- Connect to Proxmox API
+```shell
+kubectl apply -f apps/secret-caprox.yaml
+```
+We need to trigger a restart of the proxmox-provider to read the new secret
+```shell
+kubectl rollout restart deploy capmox-controller-manager -n proxmox-infrastructure-system
+```
+- Configure IP Range for the Cluster-API
+```shell
+kubectl apply -f apps/ip-pool.yaml
+```
