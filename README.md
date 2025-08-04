@@ -1,6 +1,8 @@
 # atlas
 GitOps configuration with Cluster-API to provision k8s clusters on Proxmox
 
+![Architecture](architecture/cluster_api_architecture.png)
+
 ## Requirements
 - KinD as management cluster
 - Proxmox Server 
