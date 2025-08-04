@@ -1,0 +1,13 @@
+apiVersion: ipam.cluster.x-k8s.io/v1alpha2
+kind: InClusterIPPool
+metadata:
+  name: clusterclass-ipv4
+  namespace: caprox-kubernetes-engine
+spec:
+  # Change the IP range to match your needs
+  # These IPs will be used for the Kubernetes nodes
+  # Also configure your network prefix and gateway accordingly
+  addresses:
+  - 192.168.1.115-192.168.1.130
+  gateway: 192.168.1.1
+  prefix: 24
