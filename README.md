@@ -114,6 +114,6 @@ export KUBECONFIG=./kubeconfig.yaml
 kubectl get nodes
 
 NAME                                            STATUS   ROLES           AGE     VERSION
-manuels-k8s-cluster-control-plane-4z458-ghx2z   Ready    control-plane   11m     v1.33.1
-manuels-k8s-cluster-worker-6vhjx-c2nv2-v4dbw    Ready    node            5m23s   v1.33.1
+atlas-k8s-cluster-control-plane-4z458-ghx2z     Ready    control-plane   11m     v1.33.1
+atlas-k8s-cluster-worker-6vhjx-c2nv2-v4dbw      Ready    node            5m23s   v1.33.1
 ```
