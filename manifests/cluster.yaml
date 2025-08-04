@@ -1,0 +1,27 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  labels:
+    caprox.eu/cni: cilium-v1.17.4
+  name: atlas-k8s-cluster
+  namespace: caprox-kubernetes-engine 
+spec:
+  topology:
+    class: proxmox-clusterclass-cilium-v0.1.0
+    version: 1.32.4
+    controlPlane:
+      replicas: 1
+    workers:
+      machineDeployments:
+      - class: proxmox-worker
+        name: proxmox-worker-pool
+        replicas: 2
+    variables:
+    - name: cloneSpec
+      value:
+        vmTemplate:
+          sourceNode: server1
+          templateID: 102
+    - name: controlPlaneEndpoint
+      value:
+        host: 192.168.1.155

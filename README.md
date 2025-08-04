@@ -69,13 +69,7 @@ We are going to apply them one by one in order and checked for each one it's Hea
 kubectl apply -f apps/app-cert-manager.yaml
 ```
 ```shell
-kubectl get apps -A
-```
-```shell
 kubectl apply -f apps/app-cluster-api.yaml
-```
-```shell
-kubectl get apps -A
 ```
 ```shell
 kubectl apply -f apps/app-caprox-engine.yaml
@@ -100,4 +94,24 @@ kubectl rollout restart deploy capmox-controller-manager -n proxmox-infrastructu
 - Configure IP Range for the Cluster-API
 ```shell
 kubectl apply -f apps/ip-pool.yaml
+```
+### Create first workload cluster
+- by applying cluster yaml we will have our first workload cluster provisioned. But since we are going to use GitOps approach, we are going to apply an argocd application to sync with a specefic folder in the repo.
+
+```shell
+kubectl apply -f apps/app-workload-cluster.yaml
+```
+- Retrieve Kubeconfig
+```shell
+kubectl get secrets -n caprox-kubernetes-engine manuels-k8s-cluster-kubeconfig -o jsonpath='{.data.value}' | base64 --decode > kubeconfig.yaml
+
+# Connect to the new cluster
+export KUBECONFIG=./kubeconfig.yaml
+```
+```shell
+kubectl get nodes
+
+NAME                                            STATUS   ROLES           AGE     VERSION
+manuels-k8s-cluster-control-plane-4z458-ghx2z   Ready    control-plane   11m     v1.33.1
+manuels-k8s-cluster-worker-6vhjx-c2nv2-v4dbw    Ready    node            5m23s   v1.33.1
 ```
