@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: proxmox-template-builder
+  namespace: proxmox-build-infrastructure-system
+spec:
+  schedule: "* * * * *"
+  suspend: true 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostNetwork: true
+          restartPolicy: OnFailure
+          initContainers:
+          - name: fix-permissions
+            image: busybox:1.35
+            command:
+            - sh
+            - -c
+            - |
+              chown -R 1000:1000 /cache
+              chmod -R 755 /cache
+            volumeMounts:
+            - name: build-cache
+              mountPath: /cache
+            securityContext:
+              runAsUser: 0
+          containers:
+          - name: image-builder
+            image: registry.k8s.io/scl-image-builder/cluster-node-image-builder-amd64:v0.1.45
+            envFrom:
+            - secretRef:
+                name: proxmox-image-build-config
+            args:
+            - build-proxmox-ubuntu-2404
+            env:
+            # help for slow nodes
+              - name: ANSIBLE_TIMEOUT
+                value: "60"
+            volumeMounts:
+            # Mount host directory for caching
+            - name: build-cache
+              mountPath: /home/imagebuilder/downloaded_iso_path
+          
+          volumes:
+          - name: build-cache
+            hostPath:
+              path: /tmp/build-cache  
+              type: DirectoryOrCreate
+      
