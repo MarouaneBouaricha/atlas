@@ -117,3 +117,10 @@ NAME                                            STATUS   ROLES           AGE    
 atlas-k8s-cluster-control-plane-4z458-ghx2z     Ready    control-plane   11m     v1.33.1
 atlas-k8s-cluster-worker-6vhjx-c2nv2-v4dbw      Ready    node            5m23s   v1.33.1
 ```
+
+### Scale your workload cluster
+Scale up or down is done easily by changing the `replicas` filed in `manifests/cluster.yaml` file and commit your changes. 
+```shell
+git commit -m "scale workers to 3"
+```
+The changes will be applied after argocd reconcile.
